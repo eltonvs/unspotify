@@ -1,4 +1,4 @@
-package com.example.lp2.unspotify;
+package com.imd.lp2.unspotify;
 
 import org.junit.Test;
 

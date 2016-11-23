@@ -1,4 +1,4 @@
-package com.example.lp2.unspotify;
+package com.imd.lp2.unspotify;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

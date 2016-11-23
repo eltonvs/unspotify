@@ -1,4 +1,4 @@
-package com.example.lp2.unspotify;
+package com.imd.lp2.unspotify;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
