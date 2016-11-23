@@ -1,4 +1,4 @@
-package com.example.johnnylee.unspotify;
+package com.example.lp2.unspotify;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
