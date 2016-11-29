@@ -1,10 +1,7 @@
 package com.imd.lp2.unspotify.view;
 
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -17,24 +14,24 @@ import com.imd.lp2.unspotify.R;
 import com.imd.lp2.unspotify.model.User;
 import com.imd.lp2.unspotify.model.UserCommon;
 import com.imd.lp2.unspotify.model.UserVip;
+import com.imd.lp2.unspotify.tools.FileTools;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import java.util.UUID;
 
-public class Login extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
     private List<User> listUsers = new ArrayList<>();
     private EditText edUser;
     private EditText edPass;
     private Button btLogin;
+    private Button btSignUp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,21 +44,28 @@ public class Login extends AppCompatActivity {
 
     private void setup() {
         try {
-            readFile();
+            File folder = new File("sdcard/unspotify/users.txt");
+            if(!folder.exists())
+                FileTools.writeToFile("Administrador;admin;admin;true", "users.txt",getApplicationContext());
+            readUsers();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        edUser = (EditText) findViewById(R.id.edUser);
+        edUser = (EditText) findViewById(R.id.edName);
         edPass = (EditText) findViewById(R.id.edPass);
         btLogin = (Button) findViewById(R.id.btLogin);
+        btSignUp = (Button) findViewById(R.id.btSignUp);
 
         btLogin.setOnClickListener(btLoginListener);
+        btSignUp.setOnClickListener(btSignUpListener);
     }
 
-    private void readFile() throws IOException {
+    private void readUsers() throws IOException {
         // Construct BufferedReader from FileReader
-        BufferedReader in = new BufferedReader(new InputStreamReader(getAssets().open("users.txt")));
+        File folder = new File("sdcard/unspotify");
+        FileReader fw = new FileReader(folder.getPath()+"/users.txt");
+        BufferedReader in = new BufferedReader(fw);
         String line ;
 
         while((line = in.readLine()) != null) {
@@ -91,5 +95,12 @@ public class Login extends AppCompatActivity {
         }
     };
 
+    private View.OnClickListener btSignUpListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
+            startActivity(intent);
+        }
+    };
 
 }

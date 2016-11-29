@@ -22,4 +22,8 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
+    <string name="name">Name</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="vip">VIP</string>
+    <string name="finish">Finish</string>
 </resources>

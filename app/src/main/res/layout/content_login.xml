@@ -10,11 +10,11 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.imd.lp2.unspotify.view.Login"
+    tools:context=".view.LoginActivity"
     tools:showIn="@layout/activity_login">
 
     <EditText
-        android:id="@+id/edUser"
+        android:id="@+id/edName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/username"
@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:layout_below="@id/edUser"
+        android:layout_below="@id/edName"
         android:hint="@string/password"
         android:inputType="textPassword"/>
 
@@ -38,4 +38,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/edPass"
         android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign Up"
+        android:id="@+id/btSignUp"
+        android:layout_below="@+id/btLogin"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>
