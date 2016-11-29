@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.imd.lp2.unspotify.R;
 import com.imd.lp2.unspotify.model.Music;
+import com.imd.lp2.unspotify.model.User;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        Log.d("USUARIO",  LoginActivity.currentUser.getName());
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

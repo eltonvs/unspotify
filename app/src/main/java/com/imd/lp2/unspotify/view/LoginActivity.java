@@ -2,6 +2,7 @@ package com.imd.lp2.unspotify.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,6 +23,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText edPass;
     private Button btLogin;
     private Button btSignUp;
-
+    public static User currentUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,14 +45,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setup() {
-        try {
-            File folder = new File("sdcard/unspotify/users.txt");
-            if(!folder.exists())
-                FileTools.writeToFile("Administrador;admin;admin;true", "users.txt",getApplicationContext());
-            readUsers();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        File folder = new File("sdcard/unspotify/users.txt");
+        if(!folder.exists())
+            FileTools.writeToFile("Administrador;admin;admin;true", "users.txt",getApplicationContext());
 
         edUser = (EditText) findViewById(R.id.edName);
         edPass = (EditText) findViewById(R.id.edPass);
@@ -83,15 +80,22 @@ public class LoginActivity extends AppCompatActivity {
     private View.OnClickListener btLoginListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            for (User user: listUsers) {
-                if(edUser.getText().toString().trim().matches(user.getUserName()) && edPass.getText().toString().trim().matches(user.getPass())){
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    Log.d("USER", user.getId()+"");
-                    startActivity(intent);
-                    return;
+            try {
+                readUsers();
+                for (User user: listUsers) {
+                    if(edUser.getText().toString().trim().matches(user.getUserName()) && edPass.getText().toString().trim().matches(user.getPass())){
+                        currentUser = user;
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+                        Log.d("USER", user.getId()+"");
+                        startActivity(intent);
+                        return;
+                    }
                 }
+                Toast.makeText(getApplicationContext(), "User not found", Toast.LENGTH_LONG).show();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            Toast.makeText(getApplicationContext(), "User not found", Toast.LENGTH_LONG).show();
         }
     };
 

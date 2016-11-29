@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.imd.lp2.unspotify.R;
 import com.imd.lp2.unspotify.tools.FileTools;
@@ -49,10 +50,22 @@ public class SignUpActivity extends AppCompatActivity {
     private View.OnClickListener btFinishListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            FileTools.writeToFile(edName.getText().toString().trim()+";"+edUser.getText().toString().trim()
-                    +";"+edPass.getText().toString().trim()
-                    +";"+ (chkVip.isChecked() ? "true":"false"),"users.txt", getApplicationContext());
+            if(edPass.getText().toString().trim().matches(edPassConfirm.getText().toString().trim())){
+                FileTools.writeToFile(edName.getText().toString().trim()+";"+edUser.getText().toString().trim()
+                        +";"+edPass.getText().toString().trim()
+                        +";"+ (chkVip.isChecked() ? "true":"false"),"users.txt", getApplicationContext());
+            }
+            Toast.makeText(getApplicationContext(), "User: " + edName.getText().toString() + " was succesfully created", Toast.LENGTH_LONG).show();
+            clearFields();
         }
     };
 
+    private void clearFields(){
+        edName.setText("");
+        edUser.setText("");
+        edPass.setText("");
+        edPassConfirm.setText("");
+        chkVip.setChecked(false);
+
+    }
 }
