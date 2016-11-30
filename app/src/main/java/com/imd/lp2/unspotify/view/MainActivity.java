@@ -2,10 +2,12 @@ package com.imd.lp2.unspotify.view;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -16,16 +18,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.imd.lp2.unspotify.R;
-import com.imd.lp2.unspotify.model.Music;
-import com.imd.lp2.unspotify.model.User;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "LOG";
+    public static MediaPlayer player;
+    private SeekBar seekBar;
+    private Handler mHandler = new Handler();
+    private Button btPlayStop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +54,13 @@ public class MainActivity extends AppCompatActivity
                 }catch (ActivityNotFoundException e){
                     Toast.makeText(getApplicationContext(), "None file manager found", Toast.LENGTH_LONG).show();
                 }
+
             }
         });
+        seekBar = (SeekBar) findViewById(R.id.seekBar);
+        btPlayStop = (Button) findViewById(R.id.btPlayStop);
 
+//        btPlayStop.setOnClickListener(btPlayStopListener);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -74,6 +86,7 @@ public class MainActivity extends AppCompatActivity
                     // Get the file instance
                     // File file = new File(path);
                     // Initiate the upload
+                    MusicaTask.execute(uri);
 
                 }
                 break;
@@ -138,4 +151,37 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private AsyncTask<Uri, Void, Void> MusicaTask = new AsyncTask<Uri, Void, Void>() {
+        @Override
+        protected Void doInBackground(Uri... files) {
+            player = MediaPlayer.create(MainActivity.this, files[0]);
+            player.setLooping(false); // Set looping
+            player.setVolume(1.0f, 1.0f);
+            player.start();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if(player != null && player.isPlaying()){
+                        seekBar.setMax(player.getDuration());
+                        seekBar.setProgress(player.getCurrentPosition());
+                    }
+                    mHandler.postDelayed(this, 1000);
+                }
+            });
+            return null;
+        }
+
+    };
+
+    private View.OnClickListener btPlayStopListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if(player.isPlaying()){
+                    player.stop();
+            }else{
+                player.release();
+            }
+        }
+    };
 }
