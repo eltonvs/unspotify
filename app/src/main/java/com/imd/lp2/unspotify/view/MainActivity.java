@@ -1,5 +1,6 @@
 package com.imd.lp2.unspotify.view;
 
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -19,12 +20,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.imd.lp2.unspotify.R;
+import com.imd.lp2.unspotify.model.Playlist;
 import com.imd.lp2.unspotify.model.UserCommon;
 import com.imd.lp2.unspotify.model.UserVip;
+import com.imd.lp2.unspotify.tools.Constants;
+import com.imd.lp2.unspotify.tools.FileTools;
 
 import java.io.File;
 
@@ -37,6 +42,7 @@ public class MainActivity extends AppCompatActivity
     private Handler mHandler = new Handler();
     private Button btPlayStop;
     private MusicaTask musicaTask;
+    private Dialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,6 +169,24 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_add_folder:
                 break;
             case R.id.nav_add_playlist:
+                dialog = new Dialog(this);
+                dialog.setContentView(R.layout.dialog_create_playlist);
+                Button btCreate = (Button) dialog.findViewById(R.id.btCreatePlaylist);
+                final EditText edPlaylistName = (EditText) dialog.findViewById(R.id.edDialogPlaylistName);
+                btCreate.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        StringBuilder sbPlaylistName = new StringBuilder();
+                        sbPlaylistName.append(edPlaylistName.getText().toString()).append(";");
+                        sbPlaylistName.append(LoginActivity.currentUser.getName());
+                        FileTools.writeToFile(sbPlaylistName.toString(), Constants.EXTERNAL_UNSPOTIFY_FOLDER+"playlists/",edPlaylistName.getText().toString()+".txt",  getApplicationContext());
+                        Intent intentPlaylist = new Intent(getApplicationContext(), AddPlaylistActivity.class);
+                        intentPlaylist.putExtra("playlistName", edPlaylistName.getText().toString());
+                        startActivity(intentPlaylist);
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
                 break;
             case R.id.nav_logout:
                 break;
@@ -171,6 +195,8 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
                 break;
             case R.id.nav_select_playlist:
+                Intent intentPlaylists = new Intent(getApplicationContext(), PlaylistsActivity.class);
+                startActivity(intentPlaylists);
                 break;
         }
     }

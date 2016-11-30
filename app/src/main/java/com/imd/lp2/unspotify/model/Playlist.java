@@ -9,17 +9,16 @@ import java.util.List;
 public class Playlist {
     private Integer id;
     private String name;
-    private Integer idUser;
+    private String userName;
     private List<Music> listMusics;
 
     public Playlist() {
 
     }
 
-    public Playlist(Integer id, String name, Integer idUsuario, List<Music> listMusics) {
-        this.id = id;
+    public Playlist(String name, String idUsuario, List<Music> listMusics) {
         this.name = name;
-        this.idUser = idUsuario;
+        this.userName = idUsuario;
         this.listMusics = listMusics;
     }
 
@@ -43,12 +42,12 @@ public class Playlist {
         this.name = name;
     }
 
-    public Integer getIdUsuario() {
-        return idUser;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setIdUsuario(Integer idUsuario) {
-        this.idUser = idUsuario;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public List<Music> getListMusicas() {

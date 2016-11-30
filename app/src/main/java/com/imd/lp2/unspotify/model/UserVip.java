@@ -12,7 +12,7 @@ public class UserVip extends User {
         super(name, userName, pass);
     }
 
-    public void createPlaylist(Integer id, String name, Integer idUsuario, List<Music> listMusics) {
-        Playlist playlist = new Playlist(id, name, idUsuario, listMusics);
+    public void createPlaylist(String name, String idUsuario, List<Music> listMusics) {
+        Playlist playlist = new Playlist(name, idUsuario, listMusics);
     }
 }

@@ -15,6 +15,7 @@ import com.imd.lp2.unspotify.R;
 import com.imd.lp2.unspotify.model.User;
 import com.imd.lp2.unspotify.model.UserCommon;
 import com.imd.lp2.unspotify.model.UserVip;
+import com.imd.lp2.unspotify.tools.Constants;
 import com.imd.lp2.unspotify.tools.FileTools;
 
 import java.io.BufferedReader;
@@ -28,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
-    private static final String EXTERNAL_UNSPOTIFY_FOLDER = "sdcard/unspotify/";
     private List<User> listUsers = new ArrayList<>();
     private EditText edUser;
     private EditText edPass;
@@ -44,9 +44,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setup() {
-        File folder = new File(EXTERNAL_UNSPOTIFY_FOLDER+"users.txt");
+        File folder = new File(Constants.EXTERNAL_UNSPOTIFY_FOLDER);
         if(!folder.exists())
-            FileTools.writeToFile("Administrador;admin;admin;true", "users.txt",getApplicationContext());
+            FileTools.writeToFile("Administrador;admin;admin;true", folder.getPath(), "users.txt",getApplicationContext());
 
         edUser = (EditText) findViewById(R.id.edName);
         edPass = (EditText) findViewById(R.id.edPass);
@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void readUsers() throws IOException {
         // Construct BufferedReader from FileReader
-        FileReader fw = new FileReader(EXTERNAL_UNSPOTIFY_FOLDER+"users.txt");
+        FileReader fw = new FileReader(Constants.EXTERNAL_UNSPOTIFY_FOLDER+"users.txt");
         BufferedReader in = new BufferedReader(fw);
         String line ;
 

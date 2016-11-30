@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.imd.lp2.unspotify.R;
+import com.imd.lp2.unspotify.tools.Constants;
 import com.imd.lp2.unspotify.tools.FileTools;
 
 import java.io.BufferedReader;
@@ -53,7 +54,7 @@ public class SignUpActivity extends AppCompatActivity {
             if(edPass.getText().toString().trim().matches(edPassConfirm.getText().toString().trim())){
                 FileTools.writeToFile(edName.getText().toString().trim()+";"+edUser.getText().toString().trim()
                         +";"+edPass.getText().toString().trim()
-                        +";"+ (chkVip.isChecked() ? "true":"false"),"users.txt", getApplicationContext());
+                        +";"+ (chkVip.isChecked() ? "true":"false"), Constants.EXTERNAL_UNSPOTIFY_FOLDER,"users.txt", getApplicationContext());
             }
             Toast.makeText(getApplicationContext(), "User: " + edName.getText().toString() + " was succesfully created", Toast.LENGTH_LONG).show();
             clearFields();

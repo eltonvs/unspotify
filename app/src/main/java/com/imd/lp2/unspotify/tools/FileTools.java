@@ -14,13 +14,13 @@ import java.io.PrintWriter;
  */
 public class FileTools {
 
-    public static void writeToFile(String data,String sFileName, Context context) {
+    public static void writeToFile(String data,String path,String sFileName, Context context) {
         try {
-            File folder = new File("sdcard/unspotify");
+            File folder = new File(path);
             if (!folder.exists()) {
                 folder.mkdirs();
             }
-            FileWriter fw = new FileWriter(folder.getPath()+"/"+sFileName, true);
+            FileWriter fw = new FileWriter(path+"/"+sFileName, true);
             BufferedWriter bw = new BufferedWriter(fw);
             PrintWriter out = new PrintWriter(bw);
             out.println(data);
