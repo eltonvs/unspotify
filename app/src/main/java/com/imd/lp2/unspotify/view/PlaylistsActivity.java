@@ -1,7 +1,10 @@
 package com.imd.lp2.unspotify.view;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.imd.lp2.unspotify.R;
@@ -34,7 +37,18 @@ public class PlaylistsActivity extends AppCompatActivity {
         listViewPlaylist = (ListView) findViewById(R.id.listPlaylists);
         adapter = new PlaylistsAdapter(listPlaylist, getApplicationContext());
         listViewPlaylist.setAdapter(adapter);
+        listViewPlaylist.setOnItemClickListener(listPlaylistListener);
     }
+
+    private AdapterView.OnItemClickListener listPlaylistListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            Intent intent = new Intent(getApplicationContext(), AddPlaylistActivity.class);
+            Playlist pl = (Playlist) listViewPlaylist.getItemAtPosition(i);
+            intent.putExtra("playlistName", pl.getName());
+            startActivity(intent);
+        }
+    };
 
     public void listFilesForFolder(final File folder) {
         try {
