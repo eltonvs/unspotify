@@ -68,4 +68,10 @@ public class SignUpActivity extends AppCompatActivity {
         chkVip.setChecked(false);
 
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

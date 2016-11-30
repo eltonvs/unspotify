@@ -18,7 +18,8 @@
         <activity
             android:name=".view.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".view.LoginActivity"
             android:label="@string/app_name">
@@ -28,7 +29,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.SignUpActivity"></activity>
+        <activity android:name=".view.SignUpActivity" />
+        <activity android:name=".view.AddPlaylistActivity"></activity>
     </application>
 
 </manifest>

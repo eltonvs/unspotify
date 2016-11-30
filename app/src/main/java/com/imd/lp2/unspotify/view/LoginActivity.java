@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
+    private static final String EXTERNAL_UNSPOTIFY_FOLDER = "sdcard/unspotify/";
     private List<User> listUsers = new ArrayList<>();
     private EditText edUser;
     private EditText edPass;
@@ -43,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setup() {
-        File folder = new File("sdcard/unspotify/users.txt");
+        File folder = new File(EXTERNAL_UNSPOTIFY_FOLDER+"users.txt");
         if(!folder.exists())
             FileTools.writeToFile("Administrador;admin;admin;true", "users.txt",getApplicationContext());
 
@@ -53,13 +54,11 @@ public class LoginActivity extends AppCompatActivity {
         btSignUp = (Button) findViewById(R.id.btSignUp);
 
         btLogin.setOnClickListener(btLoginListener);
-        btSignUp.setOnClickListener(btSignUpListener);
     }
 
     private void readUsers() throws IOException {
         // Construct BufferedReader from FileReader
-        File folder = new File("sdcard/unspotify");
-        FileReader fw = new FileReader(folder.getPath()+"/users.txt");
+        FileReader fw = new FileReader(EXTERNAL_UNSPOTIFY_FOLDER+"users.txt");
         BufferedReader in = new BufferedReader(fw);
         String line ;
 
@@ -84,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                     if(edUser.getText().toString().trim().matches(user.getUserName()) && edPass.getText().toString().trim().matches(user.getPass())){
                         currentUser = user;
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                         Log.d("USER", user.getId()+"");
                         startActivity(intent);
@@ -94,14 +94,6 @@ public class LoginActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-    };
-
-    private View.OnClickListener btSignUpListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
-            startActivity(intent);
         }
     };
 

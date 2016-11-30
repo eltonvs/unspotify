@@ -23,6 +23,8 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.imd.lp2.unspotify.R;
+import com.imd.lp2.unspotify.model.UserCommon;
+import com.imd.lp2.unspotify.model.UserVip;
 
 import java.io.File;
 
@@ -34,33 +36,40 @@ public class MainActivity extends AppCompatActivity
     private SeekBar seekBar;
     private Handler mHandler = new Handler();
     private Button btPlayStop;
-
+    private MusicaTask musicaTask;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        setup();
+    }
+
+    private void setup(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Log.d("USUARIO",  LoginActivity.currentUser.getName());
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*");
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                try {
-                    startActivityForResult(Intent.createChooser(intent, "Select your playlist"), 0);
-                }catch (ActivityNotFoundException e){
-                    Toast.makeText(getApplicationContext(), "None file manager found", Toast.LENGTH_LONG).show();
-                }
+        if (fab != null) {
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("*/*");
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    try {
+                        startActivityForResult(Intent.createChooser(intent, "Select your playlist"), 0);
+                    }catch (ActivityNotFoundException e){
+                        Toast.makeText(getApplicationContext(), "None file manager found", Toast.LENGTH_LONG).show();
+                    }
 
-            }
-        });
+                }
+            });
+        }
         seekBar = (SeekBar) findViewById(R.id.seekBar);
         btPlayStop = (Button) findViewById(R.id.btPlayStop);
 
-//        btPlayStop.setOnClickListener(btPlayStopListener);
+        btPlayStop.setOnClickListener(btPlayStopListener);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -70,6 +79,10 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        if (LoginActivity.currentUser instanceof UserVip)
+            navigationView.inflateMenu(R.menu.menu_vip);
+        else
+            navigationView.inflateMenu(R.menu.menu_common);
     }
 
     @Override
@@ -81,7 +94,8 @@ public class MainActivity extends AppCompatActivity
                     Log.d(TAG, "File Uri: " + uri.toString());
                     String path = uri.getPath();
                     Log.d(TAG, "File Path: " + path);
-                    MusicaTask.execute(uri);
+                    musicaTask = new MusicaTask();
+                    musicaTask.execute(uri);
                 }
                 break;
         }
@@ -101,7 +115,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+//        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -124,29 +138,44 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (LoginActivity.currentUser instanceof UserVip) {
+            menuVip(item.getItemId());
+        } else {
+            menuCommon(item.getItemId());
         }
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    private AsyncTask<Uri, Void, Void> MusicaTask = new AsyncTask<Uri, Void, Void>() {
+    private void menuCommon(int itemId) {
+        switch (itemId) {
+            case R.id.nav_logout:
+                break;
+            case R.id.nav_select_playlist:
+                break;
+        }
+    }
+
+    private void menuVip(int posicao) {
+        switch (posicao) {
+            case R.id.nav_add_folder:
+                break;
+            case R.id.nav_add_playlist:
+                break;
+            case R.id.nav_logout:
+                break;
+            case R.id.nav_register:
+                Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_select_playlist:
+                break;
+        }
+    }
+
+    private class MusicaTask extends AsyncTask<Uri, Void, Void>{
         @Override
         protected Void doInBackground(Uri... files) {
             player = MediaPlayer.create(MainActivity.this, files[0]);
@@ -166,16 +195,23 @@ public class MainActivity extends AppCompatActivity
             return null;
         }
 
-    };
+    }
 
     private View.OnClickListener btPlayStopListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(player.isPlaying()){
-                    player.stop();
-            }else{
-                player.release();
+            if(player != null){
+                if(player.isPlaying()){
+                    player.pause();
+                }else{
+                    player.seekTo(player.getCurrentPosition());
+                    seekBar.setProgress(player.getCurrentPosition());
+                    player.start();
+                }
             }
         }
     };
+
+
+
 }

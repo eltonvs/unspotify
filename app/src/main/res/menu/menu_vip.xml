@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_select_playlist"
+            android:icon="@drawable/ic_action_select_playlist"
+            android:title="Select Playlist" />
+    </group>
+
+    <item android:title="VIP">
+        <menu>
+            <item
+                android:id="@+id/nav_register"
+                android:icon="@drawable/ic_action_register"
+                android:title="Register" />
+            <item
+                android:id="@+id/nav_add_folder"
+                android:icon="@drawable/ic_action_add_folder"
+                android:title="Music Folder" />
+            <item
+                android:id="@+id/nav_add_playlist"
+                android:icon="@drawable/ic_action_add_playlist"
+                android:title="Add Playlist" />
+        </menu>
+    </item>
+
+    <group android:id="@+id/group_settings"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_action_logout"
+            android:title="Logout" />
+
+    </group>
+</menu>
