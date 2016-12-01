@@ -68,13 +68,9 @@ public class PlaylistsActivity extends AppCompatActivity {
         // Construct BufferedReader from FileReader
         FileReader fw = new FileReader(Constants.EXTERNAL_UNSPOTIFY_FOLDER+"playlists/"+file);
         BufferedReader in = new BufferedReader(fw);
-        String line ;
-
-        while((line = in.readLine()) != null) {
-            String[] data = line.split(";");
-            Playlist playlist = new Playlist(data[0], data[1], null);
-            listPlaylist.add(playlist);
-        }
+        String[] data = in.readLine().split(";");
+        Playlist playlist = new Playlist(data[0], data[1], null);
+        listPlaylist.add(playlist);
         in.close();
     }
 }

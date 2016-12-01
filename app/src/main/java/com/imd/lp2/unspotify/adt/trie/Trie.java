@@ -50,7 +50,7 @@ public class Trie {
 
         // Insere no final
         if (node.isLeaf()) {
-            node.setChildren(new HashMap<>());
+//            node.setChildren(new HashMap<>());
             if (value.length() == 1) {
                 node.getChildren().put(value.charAt(0), new Node(value.charAt(0), true));
                 return true;

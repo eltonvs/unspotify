@@ -10,14 +10,14 @@ public class Music {
     private Integer duration;
     private String artist;
 
-    public Music(String nome, String path, Integer duration, String artist) {
+    public Music(String path, String nome , Integer duration, String artist) {
         this.nome = nome;
         this.path = path;
         this.duration = duration;
         this.artist = artist;
     }
 
-    public String getNome() {
+    public String getName() {
         return nome;
     }
 
