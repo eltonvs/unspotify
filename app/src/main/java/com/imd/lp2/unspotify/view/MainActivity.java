@@ -25,13 +25,9 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.imd.lp2.unspotify.R;
-import com.imd.lp2.unspotify.model.Playlist;
-import com.imd.lp2.unspotify.model.UserCommon;
 import com.imd.lp2.unspotify.model.UserVip;
 import com.imd.lp2.unspotify.tools.Constants;
 import com.imd.lp2.unspotify.tools.FileTools;
-
-import java.io.File;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -60,14 +56,14 @@ public class MainActivity extends AppCompatActivity
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    intent.setType("*/*");
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    try {
-                        startActivityForResult(Intent.createChooser(intent, "Select your playlist"), 0);
-                    }catch (ActivityNotFoundException e){
-                        Toast.makeText(getApplicationContext(), "None file manager found", Toast.LENGTH_LONG).show();
-                    }
+//                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//                    intent.setType("*/*");
+//                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+//                    try {
+//                        startActivityForResult(Intent.createChooser(intent, "Select your playlist"), 0);
+//                    }catch (ActivityNotFoundException e){
+//                        Toast.makeText(getApplicationContext(), "None file manager found", Toast.LENGTH_LONG).show();
+//                    }
 
                 }
             });
@@ -180,7 +176,7 @@ public class MainActivity extends AppCompatActivity
                         sbPlaylistName.append(edPlaylistName.getText().toString()).append(";");
                         sbPlaylistName.append(LoginActivity.currentUser.getName());
                         FileTools.writeToFile(sbPlaylistName.toString(), Constants.EXTERNAL_UNSPOTIFY_FOLDER+"playlists/",edPlaylistName.getText().toString()+".txt",  getApplicationContext());
-                        Intent intentPlaylist = new Intent(getApplicationContext(), AddPlaylistActivity.class);
+                        Intent intentPlaylist = new Intent(getApplicationContext(), MusicActivity.class);
                         intentPlaylist.putExtra("playlistName", edPlaylistName.getText().toString());
                         startActivity(intentPlaylist);
                         dialog.dismiss();

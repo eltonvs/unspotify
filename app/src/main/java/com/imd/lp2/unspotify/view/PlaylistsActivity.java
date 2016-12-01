@@ -43,7 +43,7 @@ public class PlaylistsActivity extends AppCompatActivity {
     private AdapterView.OnItemClickListener listPlaylistListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            Intent intent = new Intent(getApplicationContext(), AddPlaylistActivity.class);
+            Intent intent = new Intent(getApplicationContext(), MusicActivity.class);
             Playlist pl = (Playlist) listViewPlaylist.getItemAtPosition(i);
             intent.putExtra("playlistName", pl.getName());
             startActivity(intent);

@@ -44,12 +44,8 @@ public class MusicAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = inflater.inflate(R.layout.item_list_music, null);
         TextView txtMusicName = (TextView) view.findViewById(R.id.txtMusicName);
-        TextView txtArtist = (TextView) view.findViewById(R.id.txtArtist);
-        TextView txtDuration = (TextView) view.findViewById(R.id.txtDuration);
 
         txtMusicName.setText(listMusics.get(i).getName());
-        txtArtist.setText(listMusics.get(i).getArtist());
-        txtDuration.setText(String.valueOf(listMusics.get(i).getDuration()));
         return view;
     }
 }
