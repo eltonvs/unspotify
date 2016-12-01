@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SeekBar;
@@ -40,7 +39,7 @@ public class MusicActivity extends AppCompatActivity {
     private SeekBar seekBar;
     private Handler mHandler = new Handler();
     private ImageButton btPlayPause;
-
+    private List<Music> listMusic;
     private int currentSong;
     private ImageButton btNext;
     private ImageButton btPrevious;
@@ -103,7 +102,7 @@ public class MusicActivity extends AppCompatActivity {
         FileReader fw = new FileReader(Constants.EXTERNAL_UNSPOTIFY_FOLDER+"playlists/"+playlist+".txt");
         BufferedReader in = new BufferedReader(fw);
         String line ;
-        List<Music> listMusic = new ArrayList<>();
+        listMusic = new ArrayList<>();
         int i = 0;
         while((line = in.readLine()) != null) {
             if(i > 0){
@@ -127,12 +126,26 @@ public class MusicActivity extends AppCompatActivity {
                     Uri uri = data.getData();
                     String filePath = getRealPath(uri);
                     String fileName = new File(filePath).getName();
-                    FileTools.writeToFile(filePath+";"+fileName, Constants.EXTERNAL_UNSPOTIFY_FOLDER+"playlists",file+".txt", getApplicationContext());
-                    try {
-                        readMusic(file);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    Music tempMusic = new Music();
+                    tempMusic.setPath(filePath);
+                    tempMusic.setName(fileName);
+                    for (Music m: listMusic) {
+                        if(m.getPath().contains(filePath)){
+                            Toast.makeText(getApplicationContext(), "Music already on this playlist", Toast.LENGTH_LONG).show();
+                            return;
+                        }
                     }
+                    /*if(!listMusic.contains(tempMusic)){
+                        try {
+                            FileTools.writeToFile(filePath+";"+fileName, Constants.EXTERNAL_UNSPOTIFY_FOLDER+"playlists",file+".txt", getApplicationContext());
+                            readMusic(file);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else
+                        Toast.makeText(getApplicationContext(), "Music already on this playlist", Toast.LENGTH_LONG).show();
+*/
                 }
                 break;
         }
@@ -242,3 +255,4 @@ public class MusicActivity extends AppCompatActivity {
     };
 
 }
+

@@ -8,6 +8,9 @@ public class Music {
     private String nome;
     private String path;
 
+    public Music() {
+    }
+
     public Music(String path, String nome) {
         this.nome = nome;
         this.path = path;
@@ -17,7 +20,7 @@ public class Music {
         return nome;
     }
 
-    public void setNome(String nome) {
+    public void setName(String nome) {
         this.nome = nome;
     }
 
