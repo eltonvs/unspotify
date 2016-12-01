@@ -11,7 +11,8 @@
     <ListView
         android:id="@+id/listMusics"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_above="@+id/footer"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

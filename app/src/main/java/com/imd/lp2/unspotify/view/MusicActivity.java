@@ -40,7 +40,6 @@ public class MusicActivity extends AppCompatActivity {
     private SeekBar seekBar;
     private Handler mHandler = new Handler();
     private ImageButton btPlayPause;
-    private MusicaTask musicaTask;
 
     private int currentSong;
     private ImageButton btNext;
@@ -82,6 +81,7 @@ public class MusicActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     currentSong = i;
+                    btPlayPause.setImageResource(android.R.drawable.ic_media_pause);
                     playMusic();
                 }
             });
@@ -94,7 +94,7 @@ public class MusicActivity extends AppCompatActivity {
         Music music = (Music) listViewMusics.getItemAtPosition(currentSong);
         File file = new File(music.getPath());
         Uri uri = Uri.fromFile(file);
-        musicaTask = new MusicaTask();
+        MusicaTask musicaTask = new MusicaTask();
         musicaTask.execute(uri);
     }
 
@@ -208,10 +208,12 @@ public class MusicActivity extends AppCompatActivity {
             if(player != null){
                 if(player.isPlaying()){
                     player.pause();
+                    btPlayPause.setImageResource(android.R.drawable.ic_media_play);
                 }else{
                     player.seekTo(player.getCurrentPosition());
                     seekBar.setProgress(player.getCurrentPosition());
                     player.start();
+                    btPlayPause.setImageResource(android.R.drawable.ic_media_pause);
                 }
             }
         }
