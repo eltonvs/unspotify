@@ -28,6 +28,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.imd.lp2.unspotify.R;
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity
     private ImageButton btNext;
     private ImageButton btPrevious;
     private FloatingActionButton fab;
+    private TextView txtCurrentSong;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,11 +73,12 @@ public class MainActivity extends AppCompatActivity
         View includedLayout = findViewById(R.id.footer); // root View id from that link
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        txtCurrentSong = (TextView) includedLayout.findViewById(R.id.txtCurrentSong);
         btPlayPause = (ImageButton) includedLayout.findViewById(R.id.btPlayPause);
         btNext = (ImageButton) includedLayout.findViewById(R.id.btNextSong);
         btPrevious = (ImageButton) includedLayout.findViewById(R.id.btPrevious);
         seekBar = (SeekBar) includedLayout.findViewById(R.id.seekBar);
-
+        seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
         btPlayPause.setOnClickListener(btPlayStopListener);
         btNext.setOnClickListener(btNextSongListener);
         btPrevious.setOnClickListener(btPreviousSongListener);
@@ -126,6 +129,7 @@ public class MainActivity extends AppCompatActivity
 
     private void playMusic() {
         Music music = (Music) listViewMusics.getItemAtPosition(currentSong);
+        txtCurrentSong.setText(music.getName().replace(".mp3", "").replace(".flac", ""));
         File file = new File(music.getPath());
         Uri uri = Uri.fromFile(file);
         MusicaTask musicaTask = new MusicaTask();
@@ -347,6 +351,25 @@ public class MainActivity extends AppCompatActivity
                 currentSong = listViewMusics.getCount() - 1;
             }
             playMusic();
+        }
+    };
+
+    private SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+            if(player!= null && b){
+                player.seekTo(i);
+            }
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
         }
     };
 
