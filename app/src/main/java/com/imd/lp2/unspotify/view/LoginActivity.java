@@ -68,7 +68,9 @@ public class LoginActivity extends AppCompatActivity {
         while((line = in.readLine()) != null) {
             User user;
             String[] data = line.split(";");
-                if(data[3].contains("true"))
+            if (data.length < 4)
+                continue;
+            if(data[3].contains("true"))
                 user = new UserVip(data[0], data[1], data[2]);
             else
                 user = new UserCommon(data[0], data[1], data[2]);
