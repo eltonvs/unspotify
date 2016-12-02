@@ -1,6 +1,7 @@
 package com.imd.lp2.unspotify.view;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -43,10 +44,11 @@ public class PlaylistsActivity extends AppCompatActivity {
     private AdapterView.OnItemClickListener listPlaylistListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            Intent intent = new Intent(getApplicationContext(), MusicActivity.class);
             Playlist pl = (Playlist) listViewPlaylist.getItemAtPosition(i);
-            intent.putExtra("playlistName", pl.getName());
-            startActivity(intent);
+            Intent data = new Intent();
+            data.setData(Uri.parse(pl.getName()));
+            setResult(RESULT_OK, data);
+            finish();
         }
     };
 

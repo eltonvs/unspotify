@@ -54,6 +54,9 @@ public class LoginActivity extends AppCompatActivity {
         btSignUp = (Button) findViewById(R.id.btSignUp);
 
         btLogin.setOnClickListener(btLoginListener);
+        edUser.setText("admin");
+        edPass.setText("admin");
+        btLogin.performClick();
     }
 
     private void readUsers() throws IOException {
@@ -86,7 +89,6 @@ public class LoginActivity extends AppCompatActivity {
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                         Log.d("USER", user.getId()+"");
-                        startActivity(intent);
                         return;
                     }
                 }
