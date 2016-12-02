@@ -3,25 +3,22 @@ package com.imd.lp2.unspotify.view;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -49,6 +46,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "LOG";
+    private static final int REQUEST_ACTIVITY_ADD_SONG = 0;
+    private static final int REQUEST_ACTIVITY_PLAYLIST_SELECTION = 1;
     private Dialog dialog;
     private String file;
     private ListView listViewMusics;
@@ -177,7 +176,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case 0:
+            case REQUEST_ACTIVITY_ADD_SONG:
                 if (resultCode == RESULT_OK) {
                     Uri uri = data.getData();
                     String filePath = FileTools.getRealPath(uri, getApplicationContext());
@@ -196,7 +195,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
                 break;
-            case 1:
+            case REQUEST_ACTIVITY_PLAYLIST_SELECTION:
                 try {
                     if (data != null && data.getDataString() != null) {
                         file = data.getDataString();
@@ -210,15 +209,6 @@ public class MainActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void menuCommon(int itemId) {
-        switch (itemId) {
-            case R.id.nav_logout:
-                break;
-            case R.id.nav_select_playlist:
-                break;
-        }
-    }
-
     List<File> getListFiles(File parentDir) {
         ArrayList<File> inFiles = new ArrayList<File>();
         File[] files = parentDir.listFiles();
@@ -228,6 +218,15 @@ public class MainActivity extends AppCompatActivity
             }
         }
         return inFiles;
+    }
+
+    private void menuCommon(int itemId) {
+        switch (itemId) {
+            case R.id.nav_logout:
+                break;
+            case R.id.nav_select_playlist:
+                break;
+        }
     }
 
     private void menuVip(int posicao) {
