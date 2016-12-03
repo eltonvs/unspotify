@@ -12,12 +12,9 @@ public abstract  class User implements Comparable<User> {
     private String userName;
     private String pass;
 
-    static {
-        UUID uniqueID = UUID.randomUUID();
-        id = Math.abs(uniqueID.getMostSignificantBits());
-    }
-
     public User(String name, String userName, String pass) {
+        UUID uniqueID = UUID.randomUUID();
+        this.id = Math.abs(uniqueID.getLeastSignificantBits());
         this.name = name;
         this.userName = userName;
         this.pass = pass;

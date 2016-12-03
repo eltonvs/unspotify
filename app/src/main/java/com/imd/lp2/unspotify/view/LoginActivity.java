@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // permission is automatically granted on sdk < 23 upon installation
-        Log.v(TAG,"Permission is granted");
+        Log.v(TAG, "Permission is granted");
         return true;
     }
 
@@ -103,22 +103,22 @@ public class LoginActivity extends AppCompatActivity {
     private View.OnClickListener btLoginListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            try {
-                readUsers();
-                for (User user: listUsers) {
-                    if(edUser.getText().toString().trim().matches(user.getUserName()) && edPass.getText().toString().trim().matches(user.getPass())){
-                        currentUser = user;
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        Log.d("USER", user.getId() + "");
-                        return;
-                    }
+        try {
+            readUsers();
+            for (User user: listUsers) {
+                if(edUser.getText().toString().trim().matches(user.getUserName()) && edPass.getText().toString().trim().matches(user.getPass())){
+                    currentUser = user;
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    Log.d("USER", user.getId() + "");
+                    return;
                 }
-                Toast.makeText(getApplicationContext(), "User not found", Toast.LENGTH_LONG).show();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+            Toast.makeText(getApplicationContext(), "User not found", Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         }
     };
 
