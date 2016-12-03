@@ -4,8 +4,19 @@
     android:layout_height="match_parent"
     android:padding="10dp">
 
+    <TextView
+        android:id="@+id/tvCreatePlaylist"
+        android:textSize="18dp"
+        android:layout_marginBottom="20dp"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Create Playlist" />
+
     <EditText
         android:id="@+id/edDialogPlaylistName"
+        android:hint="Playlist Name"
         android:layout_width="200dp"
         android:layout_gravity="center_horizontal"
         android:layout_height="wrap_content" />

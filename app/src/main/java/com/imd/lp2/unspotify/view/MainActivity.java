@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity
         View includedLayout = findViewById(R.id.footer); // root View id from that link
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         txtCurrentSong = (TextView) includedLayout.findViewById(R.id.txtCurrentSong);
         btPlayPause = (ImageButton) includedLayout.findViewById(R.id.btPlayPause);
         btNext = (ImageButton) includedLayout.findViewById(R.id.btNextSong);
@@ -86,8 +87,7 @@ public class MainActivity extends AppCompatActivity
         btPlayPause.setOnClickListener(btPlayStopListener);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -101,27 +101,27 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("audio/*");
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                try {
-                    startActivityForResult(Intent.createChooser(intent, "Select song"), 0);
-                } catch (ActivityNotFoundException e) {
-                    Toast.makeText(getApplicationContext(), "No file manager found", Toast.LENGTH_LONG).show();
-                }
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("audio/*");
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            try {
+                startActivityForResult(Intent.createChooser(intent, "Select song"), 0);
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(getApplicationContext(), "No file manager found", Toast.LENGTH_LONG).show();
+            }
             }
         });
         listViewMusics = (ListView) findViewById(R.id.listMusics);
-        if (file == null){
+        if (file == null) {
             readMusic();
             fab.setVisibility(View.GONE);
         }
         listViewMusics.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                currentSong = i;
-                btPlayPause.setImageResource(android.R.drawable.ic_media_pause);
-                playMusic();
+            currentSong = i;
+            btPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+            playMusic();
             }
         });
     }
@@ -248,18 +248,18 @@ public class MainActivity extends AppCompatActivity
                 btCreate.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        StringBuilder sbPlaylistName = new StringBuilder();
-                        sbPlaylistName.append(edPlaylistName.getText().toString()).append(";");
-                        sbPlaylistName.append(LoginActivity.currentUser.getName());
-                        FileTools.writeToFile(sbPlaylistName.toString(), Constants.EXTERNAL_UNSPOTIFY_FOLDER + "playlists", edPlaylistName.getText().toString() + ".txt", getApplicationContext());
-                        try {
-                            file = edPlaylistName.getText().toString();
-                            readMusic(file, true);
-                            fab.setVisibility(View.VISIBLE);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        dialog.dismiss();
+                    StringBuilder sbPlaylistName = new StringBuilder();
+                    sbPlaylistName.append(edPlaylistName.getText().toString()).append(";");
+                    sbPlaylistName.append(LoginActivity.currentUser.getName());
+                    FileTools.writeToFile(sbPlaylistName.toString(), Constants.EXTERNAL_UNSPOTIFY_FOLDER + "playlists", edPlaylistName.getText().toString() + ".txt", getApplicationContext());
+                    try {
+                        file = edPlaylistName.getText().toString();
+                        readMusic(file, true);
+                        fab.setVisibility(View.VISIBLE);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    dialog.dismiss();
                     }
                 });
                 dialog.show();

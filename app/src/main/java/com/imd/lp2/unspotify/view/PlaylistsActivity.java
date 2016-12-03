@@ -44,11 +44,11 @@ public class PlaylistsActivity extends AppCompatActivity {
     private AdapterView.OnItemClickListener listPlaylistListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            Playlist pl = (Playlist) listViewPlaylist.getItemAtPosition(i);
-            Intent data = new Intent();
-            data.setData(Uri.parse(pl.getName()));
-            setResult(RESULT_OK, data);
-            finish();
+        Playlist pl = (Playlist) listViewPlaylist.getItemAtPosition(i);
+        Intent data = new Intent();
+        data.setData(Uri.parse(pl.getName()));
+        setResult(RESULT_OK, data);
+        finish();
         }
     };
 
@@ -61,7 +61,7 @@ public class PlaylistsActivity extends AppCompatActivity {
                     System.out.println(fileEntry.getName());
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
