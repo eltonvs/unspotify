@@ -295,18 +295,20 @@ public class MainActivity extends AppCompatActivity
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (player != null && player.isPlaying()) {
-                        seekBar.setMax(player.getDuration());
-                        seekBar.setProgress(player.getCurrentPosition());
-                        if (player.getCurrentPosition() >= player.getDuration()) {
-                            currentSong++;
-                            playMusic();
-                        } else if (currentSong > listViewMusics.getCount()) {
-                            currentSong = 0;
-                            playMusic();
-                        }
+                if (player != null && player.isPlaying()) {
+                    seekBar.setMax(player.getDuration());
+                    seekBar.setProgress(player.getCurrentPosition());
+                    if (player.getCurrentPosition() >= player.getDuration()) {
+                        // Skip song
+                        currentSong++;
+                        playMusic();
+                    } else if (currentSong > listViewMusics.getCount()) {
+                        // Playlist finished, go to first song
+                        currentSong = 0;
+                        playMusic();
                     }
-                    mHandler.postDelayed(this, 1000);
+                }
+                mHandler.postDelayed(this, 1000);
                 }
             });
             return null;
@@ -317,17 +319,17 @@ public class MainActivity extends AppCompatActivity
     private View.OnClickListener btPlayStopListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (player != null) {
-                if (player.isPlaying()) {
-                    player.pause();
-                    btPlayPause.setImageResource(android.R.drawable.ic_media_play);
-                } else {
-                    player.seekTo(player.getCurrentPosition());
-                    seekBar.setProgress(player.getCurrentPosition());
-                    player.start();
-                    btPlayPause.setImageResource(android.R.drawable.ic_media_pause);
-                }
+        if (player != null) {
+            if (player.isPlaying()) {
+                player.pause();
+                btPlayPause.setImageResource(android.R.drawable.ic_media_play);
+            } else {
+                player.seekTo(player.getCurrentPosition());
+                seekBar.setProgress(player.getCurrentPosition());
+                player.start();
+                btPlayPause.setImageResource(android.R.drawable.ic_media_pause);
             }
+        }
         }
     };
 
@@ -336,6 +338,7 @@ public class MainActivity extends AppCompatActivity
         public void onClick(View view) {
             currentSong++;
             if (currentSong >= listViewMusics.getCount()) {
+                // Go to first
                 currentSong = 0;
             }
             playMusic();
@@ -347,6 +350,7 @@ public class MainActivity extends AppCompatActivity
         public void onClick(View view) {
             currentSong--;
             if (currentSong < 0) {
+                // Go to last song
                 currentSong = listViewMusics.getCount() - 1;
             }
             playMusic();
@@ -356,7 +360,7 @@ public class MainActivity extends AppCompatActivity
     private SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-            if(player!= null && b){
+            if (player!= null && b) {
                 player.seekTo(i);
             }
         }
