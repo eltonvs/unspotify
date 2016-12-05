@@ -1,8 +1,7 @@
 package com.imd.lp2.unspotify.view;
 
-import android.content.res.AssetManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -14,12 +13,8 @@ import com.imd.lp2.unspotify.tools.Constants;
 import com.imd.lp2.unspotify.tools.FileTools;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 public class SignUpActivity extends AppCompatActivity {
     private EditText edName;
@@ -28,6 +23,28 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText edPassConfirm;
     private Button btFinish;
     private CheckBox chkVip;
+    private View.OnClickListener btFinishListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String name = edName.getText().toString().trim();
+            String user = edUser.getText().toString().trim().toLowerCase();
+            String pass = edPass.getText().toString().trim();
+            String confPass = edPassConfirm.getText().toString().trim();
+
+            if (!name.isEmpty() && !pass.isEmpty() && pass.matches(confPass)) {
+                if (!userExists(user)) {
+                    FileTools.writeToFile(name + ";" + user + ";" + pass + ";" + (chkVip.isChecked() ? "true" : "false"), Constants.EXTERNAL_UNSPOTIFY_FOLDER, "users.txt", getApplicationContext());
+                    Toast.makeText(getApplicationContext(), "User: " + name + " was succesfully created", Toast.LENGTH_LONG).show();
+                    clearFields();
+                    finish();
+                } else {
+                    Toast.makeText(getApplicationContext(), "This user already exists", Toast.LENGTH_LONG).show();
+                }
+            } else {
+                Toast.makeText(getApplicationContext(), "Error: The user wasn't created", Toast.LENGTH_LONG).show();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +52,28 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         setup();
+    }
+
+    private boolean userExists(String user) {
+        try {
+            FileReader fw = new FileReader(Constants.EXTERNAL_UNSPOTIFY_FOLDER + "users.txt");
+            BufferedReader in = new BufferedReader(fw);
+            String line;
+
+            while ((line = in.readLine()) != null) {
+                String[] data = line.split(";");
+                if (data.length < 4)
+                    continue;
+                if (data[1].equals(user)) {
+                    return true;
+                }
+            }
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     private void setup() {
@@ -48,26 +87,12 @@ public class SignUpActivity extends AppCompatActivity {
         btFinish.setOnClickListener(btFinishListener);
     }
 
-    private View.OnClickListener btFinishListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if(edPass.getText().toString().trim().matches(edPassConfirm.getText().toString().trim())){
-                FileTools.writeToFile(edName.getText().toString().trim()+";"+edUser.getText().toString().trim()
-                        +";"+edPass.getText().toString().trim()
-                        +";"+ (chkVip.isChecked() ? "true":"false"), Constants.EXTERNAL_UNSPOTIFY_FOLDER,"users.txt", getApplicationContext());
-            }
-            Toast.makeText(getApplicationContext(), "User: " + edName.getText().toString() + " was succesfully created", Toast.LENGTH_LONG).show();
-            clearFields();
-        }
-    };
-
-    private void clearFields(){
+    private void clearFields() {
         edName.setText("");
         edUser.setText("");
         edPass.setText("");
         edPassConfirm.setText("");
         chkVip.setChecked(false);
-
     }
 
     @Override

@@ -25,6 +25,7 @@
     <string name="name">Name</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="vip">VIP</string>
+    <string name="register">Register</string>
     <string name="finish">Finish</string>
     <string name="previous_song">Previous Song</string>
     <string name="play_pause">Play/Pause</string>

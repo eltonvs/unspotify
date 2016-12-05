@@ -61,6 +61,63 @@ public class MainActivity extends AppCompatActivity
     private ImageButton btPrevious;
     private FloatingActionButton fab;
     private TextView txtCurrentSong;
+    private View.OnClickListener btPlayStopListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (player != null) {
+                if (player.isPlaying()) {
+                    player.pause();
+                    btPlayPause.setImageResource(android.R.drawable.ic_media_play);
+                } else {
+                    player.seekTo(player.getCurrentPosition());
+                    seekBar.setProgress(player.getCurrentPosition());
+                    player.start();
+                    btPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+                }
+            }
+        }
+    };
+    private View.OnClickListener btNextSongListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            currentSong++;
+            if (currentSong >= listViewMusics.getCount()) {
+                // Go to first
+                currentSong = 0;
+            }
+            playMusic();
+        }
+    };
+    private View.OnClickListener btPreviousSongListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            currentSong--;
+            if (currentSong < 0) {
+                // Go to last song
+                currentSong = listViewMusics.getCount() - 1;
+            }
+            playMusic();
+        }
+    };
+    private SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+            if (player != null && b) {
+                player.seekTo(i);
+            }
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,7 +158,7 @@ public class MainActivity extends AppCompatActivity
         TextView txtName = (TextView) header.findViewById(R.id.nav_name);
         txtUser.setText(LoginActivity.currentUser.getUserName());
         txtName.setText(LoginActivity.currentUser.getName());
-        
+
         if (LoginActivity.currentUser instanceof UserVip)
             navigationView.inflateMenu(R.menu.menu_vip);
         else
@@ -110,14 +167,14 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("audio/*");
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            try {
-                startActivityForResult(Intent.createChooser(intent, "Select song"), 0);
-            } catch (ActivityNotFoundException e) {
-                Toast.makeText(getApplicationContext(), "No file manager found", Toast.LENGTH_LONG).show();
-            }
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("audio/*");
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                try {
+                    startActivityForResult(Intent.createChooser(intent, "Select song"), 0);
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(getApplicationContext(), "No file manager found", Toast.LENGTH_LONG).show();
+                }
             }
         });
         listViewMusics = (ListView) findViewById(R.id.listMusics);
@@ -128,9 +185,9 @@ public class MainActivity extends AppCompatActivity
         listViewMusics.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            currentSong = i;
-            btPlayPause.setImageResource(android.R.drawable.ic_media_pause);
-            playMusic();
+                currentSong = i;
+                btPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+                playMusic();
             }
         });
     }
@@ -232,8 +289,10 @@ public class MainActivity extends AppCompatActivity
     private void menuCommon(int itemId) {
         switch (itemId) {
             case R.id.nav_logout:
+                logout();
                 break;
             case R.id.nav_select_playlist:
+                selectPlaylist();
                 break;
         }
     }
@@ -242,14 +301,10 @@ public class MainActivity extends AppCompatActivity
         switch (posicao) {
             case R.id.nav_add_folder:
 //                List<File> files = getListFiles(new File("YOUR ROOT"));
-
+                Toast.makeText(getApplicationContext(), "Not supported yet.", Toast.LENGTH_LONG).show();
                 break;
             case R.id.nav_add_playlist:
-                if (player != null) {
-                    player.stop();
-                    player.release();
-                    player = null;
-                }
+                releasePlayer();
                 dialog = new Dialog(this);
                 dialog.setContentView(R.layout.dialog_create_playlist);
                 Button btCreate = (Button) dialog.findViewById(R.id.btCreatePlaylist);
@@ -257,140 +312,60 @@ public class MainActivity extends AppCompatActivity
                 btCreate.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                    StringBuilder sbPlaylistName = new StringBuilder();
-                    sbPlaylistName.append(edPlaylistName.getText().toString()).append(";");
-                    sbPlaylistName.append(LoginActivity.currentUser.getName());
-                    FileTools.writeToFile(sbPlaylistName.toString(), Constants.EXTERNAL_UNSPOTIFY_FOLDER + "playlists", edPlaylistName.getText().toString() + ".txt", getApplicationContext());
-                    try {
-                        file = edPlaylistName.getText().toString();
-                        readMusic(file, true);
-                        fab.setVisibility(View.VISIBLE);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    dialog.dismiss();
+                        StringBuilder sbPlaylistName = new StringBuilder();
+                        sbPlaylistName.append(edPlaylistName.getText().toString()).append(";");
+                        sbPlaylistName.append(LoginActivity.currentUser.getName());
+                        FileTools.writeToFile(sbPlaylistName.toString(), Constants.EXTERNAL_UNSPOTIFY_FOLDER + "playlists", edPlaylistName.getText().toString() + ".txt", getApplicationContext());
+                        try {
+                            file = edPlaylistName.getText().toString();
+                            readMusic(file, true);
+                            fab.setVisibility(View.VISIBLE);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        dialog.dismiss();
                     }
                 });
                 dialog.show();
                 break;
             case R.id.nav_logout:
-                Intent LoginActivity = new Intent(this, com.imd.lp2.unspotify.view.LoginActivity.class);
-                LoginActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(LoginActivity);
-                this.finish();
+                logout();
                 break;
             case R.id.nav_register:
+                releasePlayer();
                 Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_select_playlist:
-                Intent intentPlaylists = new Intent(getApplicationContext(), PlaylistsActivity.class);
-                startActivityForResult(intentPlaylists, 1);
+                selectPlaylist();
                 break;
         }
     }
 
-
-
-    private class MusicaTask extends AsyncTask<Uri, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Uri... files) {
-            if (player != null) {
-                player.stop();
-                player.release();
-                player = null;
-            }
-            player = MediaPlayer.create(MainActivity.this, files[0]);
-            player.setLooping(false); // Set looping
-            player.setVolume(1.0f, 1.0f);
-            player.start();
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                if (player != null && player.isPlaying()) {
-                    seekBar.setMax(player.getDuration());
-                    seekBar.setProgress(player.getCurrentPosition());
-                    if (player.getCurrentPosition() >= player.getDuration()) {
-                        // Skip song
-                        currentSong++;
-                        playMusic();
-                    } else if (currentSong > listViewMusics.getCount()) {
-                        // Playlist finished, go to first song
-                        currentSong = 0;
-                        playMusic();
-                    }
-                }
-                mHandler.postDelayed(this, 1000);
-                }
-            });
-            return null;
+    private void releasePlayer() {
+        if (player != null) {
+            player.stop();
+            player.release();
+            player = null;
         }
-
     }
 
-    private View.OnClickListener btPlayStopListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-        if (player != null) {
-            if (player.isPlaying()) {
-                player.pause();
-                btPlayPause.setImageResource(android.R.drawable.ic_media_play);
-            } else {
-                player.seekTo(player.getCurrentPosition());
-                seekBar.setProgress(player.getCurrentPosition());
-                player.start();
-                btPlayPause.setImageResource(android.R.drawable.ic_media_pause);
-            }
-        }
-        }
-    };
+    private void logout() {
+        releasePlayer();
+        Intent LoginActivity = new Intent(this, com.imd.lp2.unspotify.view.LoginActivity.class);
+        LoginActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(LoginActivity);
+        this.finish();
+    }
 
-    private View.OnClickListener btNextSongListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            currentSong++;
-            if (currentSong >= listViewMusics.getCount()) {
-                // Go to first
-                currentSong = 0;
-            }
-            playMusic();
-        }
-    };
-
-    private View.OnClickListener btPreviousSongListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            currentSong--;
-            if (currentSong < 0) {
-                // Go to last song
-                currentSong = listViewMusics.getCount() - 1;
-            }
-            playMusic();
-        }
-    };
-
-    private SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
-        @Override
-        public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-            if (player!= null && b) {
-                player.seekTo(i);
-            }
-        }
-
-        @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {
-
-        }
-
-        @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {
-
-        }
-    };
+    private void selectPlaylist() {
+        Intent intentPlaylists = new Intent(getApplicationContext(), PlaylistsActivity.class);
+        startActivityForResult(intentPlaylists, 1);
+    }
 
     @Override
     public void onBackPressed() {
+        releasePlayer();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -434,6 +409,39 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private class MusicaTask extends AsyncTask<Uri, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Uri... files) {
+            releasePlayer();
+            player = MediaPlayer.create(MainActivity.this, files[0]);
+            player.setLooping(false); // Set looping
+            player.setVolume(1.0f, 1.0f);
+            player.start();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (player != null && player.isPlaying()) {
+                        seekBar.setMax(player.getDuration());
+                        seekBar.setProgress(player.getCurrentPosition());
+                        if (player.getCurrentPosition() >= player.getDuration()) {
+                            // Skip song
+                            currentSong++;
+                            playMusic();
+                        } else if (currentSong > listViewMusics.getCount()) {
+                            // Playlist finished, go to first song
+                            currentSong = 0;
+                            playMusic();
+                        }
+                    }
+                    mHandler.postDelayed(this, 1000);
+                }
+            });
+            return null;
+        }
+
     }
 
 }
