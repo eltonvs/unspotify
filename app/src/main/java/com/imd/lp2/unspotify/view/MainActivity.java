@@ -83,6 +83,8 @@ public class MainActivity extends AppCompatActivity
         btNext.setOnClickListener(btNextSongListener);
         btPrevious.setOnClickListener(btPreviousSongListener);
 
+        seekBar.setProgress(0);
+
         Log.d("USUARIO", LoginActivity.currentUser.getName());
         btPlayPause.setOnClickListener(btPlayStopListener);
 
