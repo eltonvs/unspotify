@@ -95,6 +95,13 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View header = navigationView.getHeaderView(0);
+
+        TextView txtUser = (TextView) header.findViewById(R.id.nav_username);
+        TextView txtName = (TextView) header.findViewById(R.id.nav_name);
+        txtUser.setText(LoginActivity.currentUser.getUserName());
+        txtName.setText(LoginActivity.currentUser.getName());
+        
         if (LoginActivity.currentUser instanceof UserVip)
             navigationView.inflateMenu(R.menu.menu_vip);
         else
