@@ -75,6 +75,12 @@ public class MainActivity extends AppCompatActivity
                     player.start();
                     btPlayPause.setImageResource(android.R.drawable.ic_media_pause);
                 }
+            } else if (!listMusic.isEmpty()) {
+                currentSong = 0;
+                playMusic();
+                btPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+            } else {
+                Toast.makeText(getApplicationContext(), "No music found.", Toast.LENGTH_LONG).show();
             }
         }
     };
