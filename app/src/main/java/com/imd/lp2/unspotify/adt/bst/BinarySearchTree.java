@@ -5,6 +5,8 @@
  */
 package com.imd.lp2.unspotify.adt.bst;
 
+import java.util.ArrayList;
+
 /**
  * Classe de implementação de BST
  *
@@ -367,5 +369,39 @@ public class BinarySearchTree<Type extends Comparable<Type>> {
             printPostOrder(node.getRightChild());
             System.out.print(" " + node.getValue());
         }
+    }
+
+    /*
+     * Retorna um ArrayList com os elementos da árvore (in-order)
+     */
+    public ArrayList<Type> getArrayList() {
+        return getArrayList(root);
+    }
+
+    /*
+     * Retorna um ArrayList com os elementos de um nó (in-order)
+     *
+     * @param node
+     */
+    private ArrayList<Type> getArrayList(Node node) {
+        if (node == null) {
+            return null;
+        }
+
+        ArrayList<Type> r = new ArrayList<>();
+
+        ArrayList<Type> left = getArrayList(node.getLeftChild());
+        ArrayList<Type> right = getArrayList(node.getRightChild());
+
+        // Use in-order
+        if (left != null) {
+            r.addAll(left);
+        }
+        r.add((Type) node.getValue());
+        if (right != null) {
+            r.addAll(right);
+        }
+
+        return r;
     }
 }
