@@ -19,6 +19,7 @@ import java.util.List;
 public class MusicAdapter extends BaseAdapter {
     private List<Music> listMusics;
     private Context context;
+
     public MusicAdapter(List<Music> listMusics, Context context) {
         this.listMusics = listMusics;
         this.context = context;

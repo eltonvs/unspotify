@@ -1,7 +1,5 @@
 package com.imd.lp2.unspotify.model;
 
-import java.util.List;
-
 /**
  * Created by johnnylee on 24/11/16.
  */

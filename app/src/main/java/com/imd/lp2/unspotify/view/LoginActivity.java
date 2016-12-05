@@ -27,13 +27,34 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class LoginActivity extends AppCompatActivity {
+    private static final String TAG = "LoginActivity";
+    public static User currentUser;
     private BinarySearchTree<User> bstUsers = new BinarySearchTree<>();
     private EditText edUser;
     private EditText edPass;
     private Button btLogin;
     private Button btSignUp;
-    public static User currentUser;
-    private static final String TAG = "LoginActivity";
+    private View.OnClickListener btLoginListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            try {
+                readUsers();
+                for (User user : bstUsers.getArrayList()) {
+                    if (edUser.getText().toString().trim().matches(user.getUserName()) && edPass.getText().toString().trim().matches(user.getPass())) {
+                        currentUser = user;
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        Log.d("USER", user.getId() + "");
+                        return;
+                    }
+                }
+                Toast.makeText(getApplicationContext(), "User not found", Toast.LENGTH_LONG).show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
 
         File folder = new File(Constants.EXTERNAL_UNSPOTIFY_FOLDER);
         if (!folder.exists()) {
-            FileTools.writeToFile("Administrador;admin;admin;true", folder.getPath(), "users.txt",getApplicationContext());
+            FileTools.writeToFile("Administrador;admin;admin;true", folder.getPath(), "users.txt", getApplicationContext());
         }
 
         edUser = (EditText) findViewById(R.id.edName);
@@ -96,31 +117,9 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults[0]== PackageManager.PERMISSION_GRANTED) {
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Log.v(TAG, "Permission: " + permissions[0] + " was " + grantResults[0]);
         }
     }
-
-    private View.OnClickListener btLoginListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-        try {
-            readUsers();
-            for (User user: bstUsers.getArrayList()) {
-                if(edUser.getText().toString().trim().matches(user.getUserName()) && edPass.getText().toString().trim().matches(user.getPass())){
-                    currentUser = user;
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    Log.d("USER", user.getId() + "");
-                    return;
-                }
-            }
-            Toast.makeText(getApplicationContext(), "User not found", Toast.LENGTH_LONG).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        }
-    };
 
 }

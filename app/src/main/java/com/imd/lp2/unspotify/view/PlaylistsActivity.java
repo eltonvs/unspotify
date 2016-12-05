@@ -2,8 +2,8 @@ package com.imd.lp2.unspotify.view;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -24,6 +24,17 @@ public class PlaylistsActivity extends AppCompatActivity {
     private List<Playlist> listPlaylist = new ArrayList<>();
     private ListView listViewPlaylist;
     private PlaylistsAdapter adapter;
+    private AdapterView.OnItemClickListener listPlaylistListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            Playlist pl = (Playlist) listViewPlaylist.getItemAtPosition(i);
+            Intent data = new Intent();
+            data.setData(Uri.parse(pl.getName()));
+            setResult(RESULT_OK, data);
+            finish();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,24 +44,13 @@ public class PlaylistsActivity extends AppCompatActivity {
     }
 
     private void setup() {
-        File f = new File(Constants.EXTERNAL_UNSPOTIFY_FOLDER+"playlists/");
+        File f = new File(Constants.EXTERNAL_UNSPOTIFY_FOLDER + "playlists/");
         listFilesForFolder(f);
         listViewPlaylist = (ListView) findViewById(R.id.listPlaylists);
         adapter = new PlaylistsAdapter(listPlaylist, getApplicationContext());
         listViewPlaylist.setAdapter(adapter);
         listViewPlaylist.setOnItemClickListener(listPlaylistListener);
     }
-
-    private AdapterView.OnItemClickListener listPlaylistListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Playlist pl = (Playlist) listViewPlaylist.getItemAtPosition(i);
-        Intent data = new Intent();
-        data.setData(Uri.parse(pl.getName()));
-        setResult(RESULT_OK, data);
-        finish();
-        }
-    };
 
     public void listFilesForFolder(final File folder) {
         try {
@@ -68,7 +68,7 @@ public class PlaylistsActivity extends AppCompatActivity {
 
     private void readPlaylist(String file) throws IOException {
         // Construct BufferedReader from FileReader
-        FileReader fw = new FileReader(Constants.EXTERNAL_UNSPOTIFY_FOLDER+"playlists/"+file);
+        FileReader fw = new FileReader(Constants.EXTERNAL_UNSPOTIFY_FOLDER + "playlists/" + file);
         BufferedReader in = new BufferedReader(fw);
         String[] data = in.readLine().split(";");
         Playlist playlist = new Playlist(data[0], data[1], null);

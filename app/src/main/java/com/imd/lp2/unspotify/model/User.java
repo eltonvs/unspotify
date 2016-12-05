@@ -6,7 +6,7 @@ import java.util.UUID;
  * Created by johnnylee on 24/11/16.
  */
 
-public abstract  class User implements Comparable<User> {
+public abstract class User implements Comparable<User> {
     private Long id;
     private String name;
     private String userName;

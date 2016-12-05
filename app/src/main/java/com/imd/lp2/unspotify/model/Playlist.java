@@ -22,7 +22,7 @@ public class Playlist {
         this.listMusics = listMusics;
     }
 
-    public void addSong(Music music){
+    public void addSong(Music music) {
         listMusics.add(music);
     }
 

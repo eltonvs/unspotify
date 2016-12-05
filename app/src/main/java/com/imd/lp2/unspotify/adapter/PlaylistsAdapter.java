@@ -16,9 +16,10 @@ import java.util.List;
  * Created by johnnylee on 30/11/16.
  */
 
-public class PlaylistsAdapter extends BaseAdapter{
+public class PlaylistsAdapter extends BaseAdapter {
     private List<Playlist> listPlaylist;
     private Context context;
+
     public PlaylistsAdapter(List<Playlist> listPlaylist, Context context) {
         this.listPlaylist = listPlaylist;
         this.context = context;
