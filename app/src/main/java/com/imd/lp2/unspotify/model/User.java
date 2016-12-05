@@ -7,7 +7,7 @@ import java.util.UUID;
  */
 
 public abstract  class User implements Comparable<User> {
-    private static Long id;
+    private Long id;
     private String name;
     private String userName;
     private String pass;
@@ -20,12 +20,12 @@ public abstract  class User implements Comparable<User> {
         this.pass = pass;
     }
 
-    public static Long getId() {
+    public Long getId() {
         return id;
     }
 
-    public static void setId(Long id) {
-        User.id = id;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
