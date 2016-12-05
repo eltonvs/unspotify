@@ -274,6 +274,10 @@ public class MainActivity extends AppCompatActivity
                 dialog.show();
                 break;
             case R.id.nav_logout:
+                Intent LoginActivity = new Intent(this, com.imd.lp2.unspotify.view.LoginActivity.class);
+                LoginActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(LoginActivity);
+                this.finish();
                 break;
             case R.id.nav_register:
                 Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);

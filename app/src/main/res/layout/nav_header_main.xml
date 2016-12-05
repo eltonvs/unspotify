@@ -22,13 +22,13 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/nav_username"
+        android:id="@+id/nav_name"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="Android Studio"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
-        android:id="@+id/nav_name"
+        android:id="@+id/nav_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="android.studio@android.com" />

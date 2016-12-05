@@ -57,9 +57,11 @@ public class LoginActivity extends AppCompatActivity {
         btSignUp = (Button) findViewById(R.id.btSignUp);
 
         btLogin.setOnClickListener(btLoginListener);
+
+        // TODO: Remove this before submit!!!
         edUser.setText("admin");
         edPass.setText("admin");
-        btLogin.performClick();
+        // btLogin.performClick();
     }
 
     private void readUsers() throws IOException {
