@@ -33,8 +33,7 @@ public class Trie {
             value = value.substring(1);
         }
 
-        //System.out.println(value);
-        return node.getChildren().containsKey(value.charAt(0))
+        return node.isLeaf() ? null : node.getChildren().containsKey(value.charAt(0))
                 ? search(value, node.getChildren().get(value.charAt(0)))
                 : null;
     }
@@ -44,38 +43,36 @@ public class Trie {
     }
 
     private boolean insert(String value, Node node) {
+        // Quando não pode inserir: value = null, value = ""
         if (value == null || value.length() == 0) {
             return false;
         }
 
-        // Insere no final
+        // Quando o no pai nao tem filhos
         if (node.isLeaf()) {
             node.setChildren(new HashMap<Character, Node>());
+            // é o final da string inserida
             if (value.length() == 1) {
                 node.getChildren().put(value.charAt(0), new Node(value.charAt(0), true));
                 return true;
             }
-
             node.getChildren().put(value.charAt(0), new Node(value.charAt(0), false));
-            return insert(value.substring(1), node.getChildren().get(value.charAt(0)));
-        }
-
-        // Insere quando tem
-        if (node.getChildren().containsKey(value.charAt(0))) {
+        } else if (node.getChildren().containsKey(value.charAt(0))) {
+            // Se existe um no c o caracter atual
             if (value.length() == 1) {
                 node.getChildren().get(value.charAt(0)).setEnd(true);
                 return true;
             }
-
-            return insert(value.substring(1), node.getChildren().get(value.charAt(0)));
+        } else {
+            if (value.length() == 1) {
+                // cria a chave como true
+                node.getChildren().put(value.charAt(0), new Node(value.charAt(0), true));
+                return true;
+            }
+            // cria a chave e continua inserindo...
+            node.getChildren().put(value.charAt(0), new Node(value.charAt(0), false));
         }
 
-        // Insere quando não tem
-        if (value.length() == 1) {
-            node.getChildren().put(value.charAt(0), new Node(value.charAt(0), true));
-            return true;
-        }
-        node.getChildren().put(value.charAt(0), new Node(value.charAt(0), false));
         return insert(value.substring(1), node.getChildren().get(value.charAt(0)));
     }
 
