@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.imd.lp2.unspotify.R;
 import com.imd.lp2.unspotify.adapter.MusicAdapter;
 import com.imd.lp2.unspotify.model.Music;
+import com.imd.lp2.unspotify.model.UserCommon;
 import com.imd.lp2.unspotify.model.UserVip;
 import com.imd.lp2.unspotify.tools.Constants;
 import com.imd.lp2.unspotify.tools.FileTools;
@@ -266,7 +267,10 @@ public class MainActivity extends AppCompatActivity
                     if (data != null && data.getDataString() != null) {
                         file = data.getDataString();
                         readMusic(file, true);
-                        fab.setVisibility(View.VISIBLE);
+                        if(LoginActivity.currentUser instanceof UserCommon)
+                            fab.setVisibility(View.INVISIBLE);
+                        else if(LoginActivity.currentUser instanceof UserVip)
+                            fab.setVisibility(View.VISIBLE);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
