@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.imd.lp2.unspotify.R;
+import com.imd.lp2.unspotify.adt.bst.BinarySearchTree;
 import com.imd.lp2.unspotify.model.User;
 import com.imd.lp2.unspotify.model.UserCommon;
 import com.imd.lp2.unspotify.model.UserVip;
@@ -24,11 +25,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
-    private List<User> listUsers = new ArrayList<>();
+    private BinarySearchTree<User> bstUsers = new BinarySearchTree<>();
     private EditText edUser;
     private EditText edPass;
     private Button btLogin;
@@ -75,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
             if (data.length < 4)
                 continue;
             user = data[3].contains("true") ? new UserVip(data[0], data[1], data[2]) : new UserCommon(data[0], data[1], data[2]);
-            listUsers.add(user);
+            bstUsers.insert(user);
         }
         in.close();
     }
@@ -105,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
         public void onClick(View view) {
         try {
             readUsers();
-            for (User user: listUsers) {
+            for (User user: bstUsers.getArrayList()) {
                 if(edUser.getText().toString().trim().matches(user.getUserName()) && edPass.getText().toString().trim().matches(user.getPass())){
                     currentUser = user;
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
