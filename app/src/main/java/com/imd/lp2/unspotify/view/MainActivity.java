@@ -253,9 +253,9 @@ public class MainActivity extends AppCompatActivity
         }
         MusicAdapter adapter = new MusicAdapter(listMusic, getApplicationContext());
         listViewMusics.setAdapter(adapter);
-        ArrayAdapter<String> adp= new ArrayAdapter<String>(getBaseContext(),
+        ArrayAdapter<String> adp = new ArrayAdapter<String>(getBaseContext(),
                 android.R.layout.simple_dropdown_item_1line,trie.getChildren(""));
-        //TODO: ADD ARRAYLIST ON TEXTVIEW
+        // TODO: ADD ARRAYLIST ON TEXTVIEW
         adp.setDropDownViewResource(android.R.layout.simple_expandable_list_item_1);
         txtMusics.setThreshold(1);
         txtMusics.setAdapter(adp);
@@ -265,15 +265,17 @@ public class MainActivity extends AppCompatActivity
                 String string = adapterView.getItemAtPosition(i).toString().trim();
                 int aux = 0;
                 currentSong = 0;
-                for(Music music: listMusic){
+                for (Music music: listMusic) {
                     aux++;
-                    if(music.getName().toLowerCase().equals(string)){
-                        currentSong =aux-1;
+                    if (music.getName().toLowerCase().equals(string)) {
+                        currentSong = aux - 1;
+                        break;
                     }
                 }
 //                currentSong = i;
                 btPlayPause.setImageResource(android.R.drawable.ic_media_pause);
                 playMusic();
+                txtMusics.setText("");
             }
         });
         in.close();
