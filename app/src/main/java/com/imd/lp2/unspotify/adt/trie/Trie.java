@@ -1,5 +1,6 @@
 package com.imd.lp2.unspotify.adt.trie;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -18,17 +19,18 @@ public class Trie {
     }
 
     public Node search(String value) {
-        return search(value, root);
+        Node tmp = search(value, root);
+        return tmp == null || tmp.isEnd() ? tmp : null;
     }
 
     private Node search(String value, Node node) {
         if (root.isLeaf() || node == null || value == null || value.length() == 0) {
-            return null;
+            return node;
         }
 
         if (node != root && node.getValue().equals(value.charAt(0))) {
             if (value.length() == 1) {
-                return node.isEnd() ? node : null;
+                return node;
             }
             value = value.substring(1);
         }
@@ -74,6 +76,44 @@ public class Trie {
         }
 
         return insert(value.substring(1), node.getChildren().get(value.charAt(0)));
+    }
+
+    public ArrayList<String> getChildren(String prefix) {
+        Node oc = search(prefix, root);
+
+        if (oc == null) {
+            return new ArrayList<>();
+        }
+
+        if (oc != root) {
+            ArrayList<String> r = new ArrayList<>();
+            for (HashMap.Entry<Character, Node> entry : oc.getChildren().entrySet()) {
+                ArrayList<String> tmp;
+                tmp = getChildren(prefix, entry.getValue());
+                r.addAll(tmp);
+            }
+            return r;
+        }
+
+        return getChildren(prefix, oc);
+    }
+
+    public ArrayList<String> getChildren(String prefix, Node node) {
+        ArrayList<String> r = new ArrayList<>();
+
+        if (node.isEnd() && node.getValue() != null) {
+            r.add(prefix + node.getValue());
+        }
+
+        if (!node.isLeaf()) {
+            for (HashMap.Entry<Character, Node> entry : node.getChildren().entrySet()) {
+                ArrayList<String> tmp;
+                tmp = getChildren(node.getValue() != null ? prefix + node.getValue() : prefix, entry.getValue());
+                r.addAll(tmp);
+            }
+        }
+
+        return r;
     }
 
 }
