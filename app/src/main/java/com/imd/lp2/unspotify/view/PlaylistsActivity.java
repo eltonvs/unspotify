@@ -4,9 +4,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.imd.lp2.unspotify.R;
 import com.imd.lp2.unspotify.adapter.PlaylistsAdapter;
@@ -24,17 +27,6 @@ public class PlaylistsActivity extends AppCompatActivity {
     private List<Playlist> listPlaylist = new ArrayList<>();
     private ListView listViewPlaylist;
     private PlaylistsAdapter adapter;
-    private AdapterView.OnItemClickListener listPlaylistListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            Playlist pl = (Playlist) listViewPlaylist.getItemAtPosition(i);
-            Intent data = new Intent();
-            data.setData(Uri.parse(pl.getName()));
-            setResult(RESULT_OK, data);
-            finish();
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,11 +37,40 @@ public class PlaylistsActivity extends AppCompatActivity {
 
     private void setup() {
         File f = new File(Constants.EXTERNAL_UNSPOTIFY_FOLDER + "playlists/");
-        listFilesForFolder(f);
+        if(listPlaylist != null){
+            listPlaylist = new ArrayList<>();
+        }
         listViewPlaylist = (ListView) findViewById(R.id.listPlaylists);
+        listFilesForFolder(f);
+        registerForContextMenu(listViewPlaylist);
         adapter = new PlaylistsAdapter(listPlaylist, getApplicationContext());
         listViewPlaylist.setAdapter(adapter);
         listViewPlaylist.setOnItemClickListener(listPlaylistListener);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.add("Delete Playlist");
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Playlist playlist = (Playlist) adapter.getItem(info.position);
+        switch (item.getItemId()){
+            case 0:
+//                Toast.makeText(getApplicationContext(), playlist.getName(), Toast.LENGTH_LONG).show();
+                if(LoginActivity.currentUser.getUserName().contains(playlist.getUserName())){
+                    File file = new File(Constants.EXTERNAL_UNSPOTIFY_FOLDER + "playlists/"+playlist.getName()+".txt");
+                    file.delete();
+                    setup();
+                } else{
+                    Toast.makeText(getApplicationContext(), "You're not the owner of the list", Toast.LENGTH_LONG).show();
+                }
+
+        }
+        return super.onContextItemSelected(item);
     }
 
     public void listFilesForFolder(final File folder) {
@@ -74,5 +95,22 @@ public class PlaylistsActivity extends AppCompatActivity {
         Playlist playlist = new Playlist(data[0], data[1], null);
         listPlaylist.add(playlist);
         in.close();
+    }
+
+    private AdapterView.OnItemClickListener listPlaylistListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            Playlist pl = (Playlist) listViewPlaylist.getItemAtPosition(i);
+            Intent data = new Intent();
+            data.setData(Uri.parse(pl.getName()));
+            setResult(RESULT_OK, data);
+            finish();
+        }
+    };
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
     }
 }

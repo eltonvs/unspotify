@@ -20,16 +20,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.imd.lp2.unspotify.R;
 import com.imd.lp2.unspotify.adapter.MusicAdapter;
+import com.imd.lp2.unspotify.adt.trie.Trie;
 import com.imd.lp2.unspotify.model.Music;
 import com.imd.lp2.unspotify.model.UserCommon;
 import com.imd.lp2.unspotify.model.UserVip;
@@ -57,74 +60,14 @@ public class MainActivity extends AppCompatActivity
     private Handler mHandler = new Handler();
     private ImageButton btPlayPause;
     private List<Music> listMusic = new ArrayList<>();
+
     private int currentSong;
     private ImageButton btNext;
     private ImageButton btPrevious;
     private FloatingActionButton fab;
     private TextView txtCurrentSong;
-    private View.OnClickListener btPlayStopListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            if (player != null) {
-                if (player.isPlaying()) {
-                    player.pause();
-                    btPlayPause.setImageResource(android.R.drawable.ic_media_play);
-                } else {
-                    player.seekTo(player.getCurrentPosition());
-                    seekBar.setProgress(player.getCurrentPosition());
-                    player.start();
-                    btPlayPause.setImageResource(android.R.drawable.ic_media_pause);
-                }
-            } else if (!listMusic.isEmpty()) {
-                currentSong = 0;
-                playMusic();
-                btPlayPause.setImageResource(android.R.drawable.ic_media_pause);
-            } else {
-                Toast.makeText(getApplicationContext(), "No music found.", Toast.LENGTH_LONG).show();
-            }
-        }
-    };
-    private View.OnClickListener btNextSongListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            currentSong++;
-            if (currentSong >= listViewMusics.getCount()) {
-                // Go to first
-                currentSong = 0;
-            }
-            playMusic();
-        }
-    };
-    private View.OnClickListener btPreviousSongListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            currentSong--;
-            if (currentSong < 0) {
-                // Go to last song
-                currentSong = listViewMusics.getCount() - 1;
-            }
-            playMusic();
-        }
-    };
-    private SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
-        @Override
-        public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-            if (player != null && b) {
-                player.seekTo(i);
-            }
-        }
-
-        @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {
-
-        }
-
-        @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {
-
-        }
-    };
-
+    private MultiAutoCompleteTextView txtMusics;
+    private Trie trie = new Trie();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,6 +80,8 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        txtMusics = (MultiAutoCompleteTextView) findViewById(R.id.multiAutoCompleteTextView);
+        txtMusics.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
         txtCurrentSong = (TextView) includedLayout.findViewById(R.id.txtCurrentSong);
         btPlayPause = (ImageButton) includedLayout.findViewById(R.id.btPlayPause);
         btNext = (ImageButton) includedLayout.findViewById(R.id.btNextSong);
@@ -198,6 +143,69 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
+    private View.OnClickListener btPlayStopListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (player != null) {
+                if (player.isPlaying()) {
+                    player.pause();
+                    btPlayPause.setImageResource(android.R.drawable.ic_media_play);
+                } else {
+                    player.seekTo(player.getCurrentPosition());
+                    seekBar.setProgress(player.getCurrentPosition());
+                    player.start();
+                    btPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+                }
+            } else if (!listMusic.isEmpty()) {
+                currentSong = 0;
+                playMusic();
+                btPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+            } else {
+                Toast.makeText(getApplicationContext(), "No music found.", Toast.LENGTH_LONG).show();
+            }
+        }
+    };
+    private View.OnClickListener btNextSongListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            currentSong++;
+            if (currentSong >= listViewMusics.getCount()) {
+                // Go to first
+                currentSong = 0;
+            }
+            playMusic();
+        }
+    };
+    private View.OnClickListener btPreviousSongListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            currentSong--;
+            if (currentSong < 0) {
+                // Go to last song
+                currentSong = listViewMusics.getCount() - 1;
+            }
+            playMusic();
+        }
+    };
+
+    private SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+            if (player != null && b) {
+                player.seekTo(i);
+            }
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
+        }
+    };
 
     private void playMusic() {
         Music music = (Music) listViewMusics.getItemAtPosition(currentSong);
@@ -229,6 +237,7 @@ public class MainActivity extends AppCompatActivity
         BufferedReader in = new BufferedReader(fw);
         String line;
         if (clear) {
+            trie = new Trie();
             listMusic = new ArrayList<>();
             listViewMusics.setAdapter(null);
         }
@@ -238,11 +247,35 @@ public class MainActivity extends AppCompatActivity
                 String[] data = line.split(";");
                 Music music = new Music(data[0], data[1]);
                 listMusic.add(music);
+                trie.insert(music.getName().toLowerCase().replace(".txt", "").replace(".flac", ""));
             }
             i++;
         }
         MusicAdapter adapter = new MusicAdapter(listMusic, getApplicationContext());
         listViewMusics.setAdapter(adapter);
+        ArrayAdapter<String> adp= new ArrayAdapter<String>(getBaseContext(),
+                android.R.layout.simple_dropdown_item_1line,trie.getChildren(""));
+        //TODO: ADD ARRAYLIST ON TEXTVIEW
+        adp.setDropDownViewResource(android.R.layout.simple_expandable_list_item_1);
+        txtMusics.setThreshold(1);
+        txtMusics.setAdapter(adp);
+        txtMusics.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String string = adapterView.getItemAtPosition(i).toString().trim();
+                int aux = 0;
+                currentSong = 0;
+                for(Music music: listMusic){
+                    aux++;
+                    if(music.getName().toLowerCase().equals(string)){
+                        currentSong =aux-1;
+                    }
+                }
+//                currentSong = i;
+                btPlayPause.setImageResource(android.R.drawable.ic_media_pause);
+                playMusic();
+            }
+        });
         in.close();
     }
 
@@ -453,5 +486,4 @@ public class MainActivity extends AppCompatActivity
         }
 
     }
-
 }
