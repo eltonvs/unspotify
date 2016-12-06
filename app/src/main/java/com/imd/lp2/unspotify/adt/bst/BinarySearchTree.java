@@ -371,17 +371,20 @@ public class BinarySearchTree<Type extends Comparable<Type>> implements IBinaryS
         }
     }
 
-    /*
+    /**
      * Retorna um ArrayList com os elementos da árvore (in-order)
+     *
+     * @return ArrayList com todos os elementos da árvore em ordem
      */
     public ArrayList<Type> getArrayList() {
         return getArrayList(root);
     }
 
-    /*
+    /**
      * Retorna um ArrayList com os elementos de um nó (in-order)
      *
      * @param node
+     * @return ArrayList com todos os elementos da árvore em ordem
      */
     private ArrayList<Type> getArrayList(Node node) {
         if (node == null) {

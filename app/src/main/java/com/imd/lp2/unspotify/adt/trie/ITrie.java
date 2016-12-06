@@ -16,6 +16,4 @@ public interface ITrie {
 
     ArrayList<String> getChildren(String prefix);
 
-    ArrayList<String> getChildren(String prefix, Node node);
-
 }

@@ -14,15 +14,30 @@ public class Trie implements ITrie {
         this.root = new Node();
     }
 
+    /**
+     * Verifica se a árvore está vazia
+     * @return boolean
+     */
     public boolean isEmpty() {
         return root.isLeaf();
     }
 
+    /**
+     * Wrapper público para busca na árvore
+     * @param value valor a ser buscado
+     * @return Nó com o valor ou null
+     */
     public Node search(String value) {
         Node tmp = search(value, root);
         return tmp == null || tmp.isEnd() ? tmp : null;
     }
 
+    /**
+     * Método privado de busca na árvore
+     * @param value valor a ser buscado
+     * @param node nó para buscar o valor
+     * @return Nó com o valor ou null
+     */
     private Node search(String value, Node node) {
         if (root.isLeaf() || node == null || value == null || value.length() == 0) {
             return node;
@@ -40,10 +55,21 @@ public class Trie implements ITrie {
                 : null;
     }
 
+    /**
+     * Wrapper público para inserção na árvore
+     * @param value valor a ser inserido na árvore
+     * @return boolean se foi inserido com sucesso ou não
+     */
     public boolean insert(String value) {
         return insert(value, root);
     }
 
+    /**
+     * Método privado de inserção na árvore
+     * @param value valor a ser inserido na árvore
+     * @param node nó a ser inserido o valor
+     * @return boolean se foi inserido com sucesso ou não
+     */
     private boolean insert(String value, Node node) {
         // Quando não pode inserir: value = null, value = ""
         if (value == null || value.length() == 0) {
@@ -78,6 +104,12 @@ public class Trie implements ITrie {
         return insert(value.substring(1), node.getChildren().get(value.charAt(0)));
     }
 
+    /**
+     * Wrapper público para retornar um ArrayList com todas
+     * as strings que começam com um determinado prefixo
+     * @param prefix Prefixo das strings a serem retornadas
+     * @return ArrayList de strings que começam com um determinado prefixo
+     */
     public ArrayList<String> getChildren(String prefix) {
         Node oc = search(prefix, root);
 
@@ -98,7 +130,14 @@ public class Trie implements ITrie {
         return getChildren(prefix, oc);
     }
 
-    public ArrayList<String> getChildren(String prefix, Node node) {
+    /**
+     * Método privado para retornar um ArrayList com todas
+     * as strings que começam com um determinado prefixo
+     * @param prefix Prefixo das strings a serem retornadas
+     * @param node Nó a ser feita a busca pelas strings
+     * @return ArrayList de strings que começam com um determinado prefixo
+     */
+    private ArrayList<String> getChildren(String prefix, Node node) {
         ArrayList<String> r = new ArrayList<>();
 
         if (node.isEnd() && node.getValue() != null) {
