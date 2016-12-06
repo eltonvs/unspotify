@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * @author Elton Viana
  * @param <Type>
  */
-public class BinarySearchTree<Type extends Comparable<Type>> {
+public class BinarySearchTree<Type extends Comparable<Type>> implements IBinarySearchTree<Type> {
 
     private Node<Type> root;
 
@@ -371,17 +371,20 @@ public class BinarySearchTree<Type extends Comparable<Type>> {
         }
     }
 
-    /*
+    /**
      * Retorna um ArrayList com os elementos da árvore (in-order)
+     *
+     * @return ArrayList com todos os elementos da árvore em ordem
      */
     public ArrayList<Type> getArrayList() {
         return getArrayList(root);
     }
 
-    /*
+    /**
      * Retorna um ArrayList com os elementos de um nó (in-order)
      *
      * @param node
+     * @return ArrayList com todos os elementos da árvore em ordem
      */
     private ArrayList<Type> getArrayList(Node node) {
         if (node == null) {
