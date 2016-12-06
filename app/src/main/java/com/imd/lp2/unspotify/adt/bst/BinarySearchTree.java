@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * @author Elton Viana
  * @param <Type>
  */
-public class BinarySearchTree<Type extends Comparable<Type>> {
+public class BinarySearchTree<Type extends Comparable<Type>> implements IBinarySearchTree<Type> {
 
     private Node<Type> root;
 

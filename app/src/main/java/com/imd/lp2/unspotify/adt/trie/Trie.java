@@ -6,7 +6,7 @@ import java.util.HashMap;
 /**
  * @author Elton Viana
  */
-public class Trie {
+public class Trie implements ITrie {
 
     private Node root;
 
